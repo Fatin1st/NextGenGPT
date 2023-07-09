@@ -33,7 +33,7 @@ function handleApiKeySubmit() {
   const apiKey = document.getElementById("apiKeyInput").value;
 
   // Send the API key to the server for further processing
-  fetch("http://localhost:5000/api-key", {
+  fetch("https://nextgengpt.onrender.com/api-key", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -48,7 +48,8 @@ function handleApiKeySubmit() {
 
         // Create success alert message
         const successDiv = document.createElement("div");
-        successDiv.className = "alert alert-success d-flex align-items-center fade show";
+        successDiv.className =
+          "alert alert-success d-flex align-items-center fade show";
         successDiv.setAttribute("role", "alert");
         successDiv.innerHTML = `
           <div>
@@ -57,7 +58,9 @@ function handleApiKeySubmit() {
         `;
 
         // Clear any existing success message
-        const apiSubmissionSuccessDiv = document.getElementById("api_submission_success");
+        const apiSubmissionSuccessDiv = document.getElementById(
+          "api_submission_success"
+        );
         apiSubmissionSuccessDiv.innerHTML = "";
 
         // Append success message to the success div
@@ -262,7 +265,7 @@ const handleSubmit = async (e) => {
 
   // fetch data from server -> bot's response
   try {
-    const response = await fetch("http://localhost:5000", {
+    const response = await fetch("https://nextgengpt.onrender.com", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
