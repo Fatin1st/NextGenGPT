@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/jpg"
+      href="assets/transparent_nextgengpt.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap links -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Include the Web Speech API script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webkitSpeechRecognition/1.1.0/webkitSpeechRecognition.js"></script>
+    <link rel="stylesheet" href="style.css" />
+
+    <title>NextGenGPT</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="sidebarButton" class="p-0" style="position: fixed; top: 0; right: 0; z-index: 1000; width: fit-content;">
+        <button onclick="showApiModalByBtn()" class="p-0" style="width: fit-content;">
+          <img style="width: 5%; margin: 0; padding: 0;" src="assets/api_icon.png" />
+        </button>
+      </div>
+      <div id="api_submission_success"></div>
+      <div id="chat_container"></div>
+
+      <!-- Modal starts -->
+      <!-- API Key Modal -->
+      <div
+        class="modal fade"
+        id="apiModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="apiModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content" style="background: #343541">
+            <div class="modal-header">
+              <h5
+                class="modal-title text-white font-weight-bold"
+                id="apiModalLabel"
+              >
+                Set up your API Key
+              </h5>
+            </div>
+
+            <div class="modal-body">
+              <div class="row align-items-center d-flex">
+                <div class="col-2">
+                  <p class="mb-0" style="font-weight: 500; color: #d1d5db">
+                    API Key:
+                  </p>
+                </div>
+                <div class="col-10">
+                  <input
+                    id="apiKeyInput"
+                    class="form-control"
+                    style="
+                      background: #4b5563;
+                      outline: none;
+                      padding: 3px;
+                      border: none;
+                      font-size: 17px;
+                    "
+                    aria-label="API Key"
+                    type="text"
+                  />
+                </div>
+              </div>
+
+              <br />
+              <p style="color: #d1d5db">
+                Get your personal API key from
+                <a
+                  href="https://platform.openai.com/account/api-keys"
+                  style="color: #36ae7c; text-decoration: underline"
+                  >here</a
+                >
+              </p>
+              <p style="color: #d1d5db">
+                We prioritize the security of your API key and handle it with
+                utmost care. Your key is exclusively stored on your browser and
+                never shared with any third-party entity. It is solely used for
+                the intended purpose of accessing the OpenAI API and not for any
+                other unauthorized use.
+              </p>
+            </div>
+
+            <div
+              class="modal-footer d-flex align-items-center justify-content-center"
+            >
+              <button
+                type="button"
+                class="btn btn-success"
+                id="apiKeySubmit"
+                data-dismiss="modal"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- API Key Modal ends -->
+
+      <form class="w-75 justify-content-center rounded mb-2">
+        <textarea
+          id="textarea"
+          name="prompt"
+          rows="1"
+          cols="1"
+          placeholder="Ask NextGenGPT..."
+        ></textarea>
+        <button id="mic_button" onclick="startRecording()">
+          <img src="assets/mic.png" id="mic_icon" alt="Microphone" />
+          <img
+            src="assets/mic_active.png"
+            id="mic_active_icon"
+            alt="Active Microphone"
+            style="display: none"
+          />
+        </button>
+        <button type="submit"><img src="assets/send.png" /></button>
+      </form>
+    </div>
+
+    <!-- Include the script -->
+    <script type="module" src="/script.js"></script>
+
+    <script>
+      // Function to check if the API key exists in the local storage
+      function isApiKeySaved() {
+        const apiKey = localStorage.getItem("apiKey");
+        return apiKey !== null;
+      }
+
+      // Function to save the API key to the local storage
+      function saveApiKey(apiKey) {
+        localStorage.setItem("apiKey", apiKey);
+      }
+
+      // Function to retrieve the API key from the local storage
+      function getApiKey() {
+        return localStorage.getItem("apiKey");
+      }
+
+      // Function to show the modal for new users
+      function showApiModal() {
+        if (!isApiKeySaved()) {
+          $("#apiModal").modal("show");
+        }
+      }
+      function showApiModalByBtn() {
+        $("#apiModal").modal("show");
+      }
+
+      // Function to hide the modal
+      function hideModal() {
+        const modal = document.getElementById("apiModal");
+        modal.style.display = "none";
+      }
+
+      // Event listener for API key submission button
+      document
+        .getElementById("apiKeySubmit")
+        .addEventListener("click", function () {
+          const apiKey = document.getElementById("apiKeyInput").value;
+          saveApiKey(apiKey);
+          hideModal();
+        });
+
+      // Display the modal for new users when the page loads
+      $(window).on("load", showApiModal);
+    </script>
+  </body>
+</html>
