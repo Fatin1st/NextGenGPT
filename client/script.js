@@ -32,7 +32,7 @@ function handleApiKeySubmit() {
   const apiKey = document.getElementById("apiKeyInput").value;
 
   // Send the API key to the server for further processing
-  fetch("http://localhost:5000/api-key", {
+  fetch("http://nextgengpt.render.app:5000/api-key", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -266,7 +266,7 @@ const handleSubmit = async (e) => {
   try {
     let response;
     if (search_on_wiki === true) {
-      response = await fetch("http://localhost:5000/wikipedia-search", {
+      response = await fetch("http://nextgengpt.render.app:5000/wikipedia-search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -277,7 +277,7 @@ const handleSubmit = async (e) => {
         }),
       });
     } else if (search_on_wiki === false) {
-      response = await fetch("http://localhost:5000", {
+      response = await fetch("http://nextgengpt.render.app:5000", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
