@@ -266,7 +266,7 @@ const handleSubmit = async (e) => {
   try {
     let response;
     if (search_on_wiki === true) {
-      response = await fetch("httpss://nextgengpt.render.app:5000/wikipedia-search", {
+      response = await fetch("https://nextgengpt.render.app:5000/wikipedia-search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -277,7 +277,7 @@ const handleSubmit = async (e) => {
         }),
       });
     } else if (search_on_wiki === false) {
-      response = await fetch("httpss://nextgengpt.render.app:5000", {
+      response = await fetch("https://nextgengpt.render.app:5000", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
