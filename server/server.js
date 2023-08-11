@@ -2,6 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import { Configuration, OpenAIApi } from "openai";
+import { executePythonScript } from "./execPython.js"; // Adjust the path
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ app.use(express.json());
 
 app.get("/", async (req, res) => {
   res.status(200).send({
-    message: "Hello from CodeMan!",
+    message: "Hello from NextGenGPT!",
   });
 });
 
@@ -22,6 +23,28 @@ app.post("/api-key", (req, res) => {
   apiKey = key; // Set the API key received from the client
   res.sendStatus(200); // Send a success response to the client
 });
+
+app.post("/wikipedia-search", async (req, res) => {
+  try {
+    const searchTerm = req.body.searchTerm;
+    const numSentences = req.body.numSentences;
+
+    // Python script path
+    const pythonScriptPath = "wiki.py";
+
+    const result = await executePythonScript(pythonScriptPath, [
+      searchTerm,
+      numSentences.toString(),
+    ]);
+
+    res.status(200).send({ text: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Failed to connect to web");
+  }
+});
+
+
 
 app.post("/", async (req, res) => {
   try {
@@ -84,5 +107,5 @@ app.post("/", async (req, res) => {
 });
 
 app.listen(5000, () =>
-  console.log("AI server started on http://localhost:5000")
+  console.log("AI server started on Port 5000")
 );

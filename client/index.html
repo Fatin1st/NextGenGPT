@@ -21,6 +21,29 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Toggle -->
+    <link
+      href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
     <!-- Include the Web Speech API script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webkitSpeechRecognition/1.1.0/webkitSpeechRecognition.js"></script>
@@ -30,9 +53,26 @@
   </head>
   <body>
     <div id="app">
-      <div id="sidebarButton" class="p-0" style="position: fixed; top: 0; right: 0; z-index: 1000; width: fit-content;">
-        <button onclick="showApiModalByBtn()" class="p-0" style="width: fit-content;">
-          <img style="width: 5%; margin: 0; padding: 0;" src="assets/api_icon.png" />
+      <div
+        id="sidebarButton"
+        class="p-0"
+        style="
+          position: fixed;
+          top: 0;
+          right: 0;
+          z-index: 1000;
+          width: fit-content;
+        "
+      >
+        <button
+          onclick="showApiModalByBtn()"
+          class="p-0"
+          style="width: fit-content"
+        >
+          <img
+            style="width: 5%; margin: 0; padding: 0"
+            src="assets/api_icon.png"
+          />
         </button>
       </div>
       <div id="api_submission_success"></div>
@@ -126,6 +166,7 @@
           cols="1"
           placeholder="Ask NextGenGPT..."
         ></textarea>
+
         <button id="mic_button" onclick="startRecording()">
           <img src="assets/mic.png" id="mic_icon" alt="Microphone" />
           <img
@@ -137,6 +178,48 @@
         </button>
         <button type="submit"><img src="assets/send.png" /></button>
       </form>
+
+      <div class="justify-content-center mb-3 mt-2 row col-12 w-75" style="display: flex;">
+        <div class="col-6" style="display: flex; gap: 20px;">
+          <h4 class="text-white text-center d-flex align-items-center">Search on web: </h4>
+          <!-- Toggle button for Wikipedia search -->
+          <style>
+            .toggle.ios,
+            .toggle-on.ios,
+            .toggle-off.ios {
+              border-radius: 25px;
+            }
+            .toggle.ios .toggle-handle {
+              border-radius: 25px;
+            }
+          </style>
+          <input
+            class="btn btn-sm"
+            id="wiki-toggle"
+            type="checkbox"
+            data-on="Web"
+            data-off="Web"
+            data-toggle="toggle"
+            data-style="ios"
+            data-onstyle="success"
+            data-offstyle="secondary"
+          />
+          <div id="console-event"></div>
+        </div>
+
+        <div class="col-2" style="display: flex; gap: 20px;">
+          <h4 class="text-white text-center d-flex align-items-center">Sentences: </h4>
+          <select class="form-control text-white" id="numSentences" style="background-color: #545B62;">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>5</option>
+            <option>10</option>
+            <option>20</option>
+            <option>50</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <!-- Include the script -->

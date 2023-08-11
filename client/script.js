@@ -14,8 +14,7 @@ let recognition;
 let isVoiceInput = false; // Flag to track voice input
 let loadInterval;
 let desiredVoice;
-
-
+let search_on_wiki = false;
 // Function to show the modal
 function showModal() {
   const modal = document.getElementById("apiModal");
@@ -33,7 +32,7 @@ function handleApiKeySubmit() {
   const apiKey = document.getElementById("apiKeyInput").value;
 
   // Send the API key to the server for further processing
-  fetch("https://nextgengpt.onrender.com/api-key", {
+  fetch("http://localhost:5000/api-key", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -84,27 +83,23 @@ function handleApiKeySubmit() {
 }
 
 // Event listener for API key submission button
-document.getElementById("apiKeySubmit").addEventListener("click", handleApiKeySubmit);
+document
+  .getElementById("apiKeySubmit")
+  .addEventListener("click", handleApiKeySubmit);
 
 // Display the modal when the page loads
 window.addEventListener("DOMContentLoaded", showModal);
 
-
-
-
-
-
 // Wait for the voices to be loaded
-window.speechSynthesis.onvoiceschanged = function() {
+window.speechSynthesis.onvoiceschanged = function () {
   // Retrieve the available voices
   var voices = window.speechSynthesis.getVoices();
-  
+
   // Find the desired voice by its name or other properties
-  desiredVoice = voices.find(function(voice) {
+  desiredVoice = voices.find(function (voice) {
     return voice.name === "Google UK English Female";
   });
 };
-
 
 // Message loader animation
 function loader(element) {
@@ -263,17 +258,35 @@ const handleSubmit = async (e) => {
   const messageDiv = document.getElementById(uniqueId);
   loader(messageDiv);
 
+  // Retrieve the selected number of sentences
+  const numSentencesSelect = document.getElementById("numSentences");
+  const numSentences = numSentencesSelect.value;
+
   // fetch data from server -> bot's response
   try {
-    const response = await fetch("https://nextgengpt.onrender.com", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: data.get("prompt"),
-      }),
-    });
+    let response;
+    if (search_on_wiki === true) {
+      response = await fetch("http://localhost:5000/wikipedia-search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          searchTerm: data.get("prompt"),
+          numSentences: numSentences,
+        }),
+      });
+    } else if (search_on_wiki === false) {
+      response = await fetch("http://localhost:5000", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: data.get("prompt"),
+        }),
+      });
+    }
 
     clearInterval(loadInterval);
     messageDiv.innerHTML = "";
@@ -281,36 +294,63 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       const responseData = await response.json();
 
-      if (responseData.bot.type === "image") {
-        // Handle image response
-        const imageContainer = document.createElement("div");
-        imageContainer.classList.add("image-container");
-        const imageElement = document.createElement("img");
-        imageElement.src = responseData.bot.url;
-        imageElement.alt = "Generated Image";
-        imageContainer.appendChild(imageElement);
-        messageDiv.appendChild(imageContainer);
-      } else if (responseData.bot.type === "text") {
-        // Handle text response
-        const parsedData = responseData.bot.response.trim();
+      if (search_on_wiki === true && responseData.text) {
+        // Handle Wikipedia search response
+        const parsedData = responseData.text.trim();
         typeAndpronounce(messageDiv, parsedData);
+      } else if (search_on_wiki === false && responseData.bot) {
+        // Handle regular bot response
+        const botData = responseData.bot;
+        if (botData.type === "image") {
+          // Handle image response
+          const imageContainer = document.createElement("div");
+          imageContainer.classList.add("image-container");
+          const imageElement = document.createElement("img");
+          imageElement.src = botData.url;
+          imageElement.alt = "Generated Image";
+          imageContainer.appendChild(imageElement);
+          messageDiv.appendChild(imageContainer);
+        } else if (botData.type === "text") {
+          // Handle text response
+          const parsedData = botData.response.trim();
+          typeAndpronounce(messageDiv, parsedData);
+        } else if (botData.type === "error") {
+          // Handle error response
+          messageDiv.innerHTML = botData.message;
+        }
+      } else {
+        messageDiv.innerHTML = "Invalid response data.";
       }
     } else {
       const err = await response.text();
-      messageDiv.innerHTML = "Something went wrong";
-      console.log(err);
+      messageDiv.innerHTML = err;
       alert(err);
     }
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-    messageDiv.innerHTML =
-      "Invalid API Key!<br>Check if your API got expired or is misconfigured.";
-    } else {
-      messageDiv.innerHTML =
-        "Something went worng!";
-    }
+    messageDiv.innerHTML = "Something went wrong!";
+    console.error(error);
   }
 };
+
+// Event listener of Wikipedia Toggle
+$(function () {
+  $("#wiki-toggle").change(function () {
+    const isChecked = $(this).prop("checked");
+
+    if (isChecked) {
+      // Enable Wikipedia search
+      search_on_wiki = true;
+      $("#textarea").attr(
+        "placeholder",
+        "Ask NextGenGPT or search on Web..."
+      );
+    } else {
+      // Disable Wikipedia search
+      search_on_wiki = false;
+      $("#textarea").attr("placeholder", "Ask NextGenGPT...");
+    }
+  });
+});
 
 form.addEventListener("submit", handleSubmit);
 form.addEventListener("keyup", (e) => {
